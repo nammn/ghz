@@ -2,6 +2,7 @@ package runner
 
 import (
 	"encoding/json"
+	"github.com/jhump/protoreflect/desc"
 	"math"
 	"os"
 	"runtime"
@@ -10,6 +11,10 @@ import (
 
 	"github.com/stretchr/testify/assert"
 )
+
+func testFun(mtd *desc.MethodDescriptor) []byte {
+	return nil
+}
 
 func TestRunConfig_newRunConfig(t *testing.T) {
 	t.Run("fail with empty call", func(t *testing.T) {
@@ -125,6 +130,7 @@ func TestRunConfig_newRunConfig(t *testing.T) {
 			WithName("asdf"),
 			WithCPUs(4),
 			WithBinaryData([]byte("asdf1234foobar")),
+			WithBinaryDataFunc(testFun),
 			WithMetadataFromFile("../testdata/metadata.json"),
 			WithProtoset("testdata/bundle.protoset"),
 		)
@@ -150,6 +156,7 @@ func TestRunConfig_newRunConfig(t *testing.T) {
 		assert.Equal(t, 4, c.cpus)
 		assert.Equal(t, "asdf", c.name)
 		assert.Equal(t, []byte("asdf1234foobar"), c.data)
+		assert.Equal(t, testFun, c.dataFunc)
 		assert.Equal(t, `{"request-id": "{{.RequestNumber}}"}`, string(c.metadata))
 		assert.Equal(t, "", string(c.proto))
 		assert.Equal(t, "testdata/bundle.protoset", string(c.protoset))

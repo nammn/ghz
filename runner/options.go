@@ -5,6 +5,7 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"fmt"
+	"github.com/jhump/protoreflect/desc"
 	"io"
 	"io/ioutil"
 	"math"
@@ -61,7 +62,7 @@ type RunConfig struct {
 	data []byte
 
 	// data func
-	dataFunc     func(method string) []byte
+	dataFunc func(mtd *desc.MethodDescriptor) []byte
 
 	binary   bool
 	metadata []byte
@@ -305,7 +306,7 @@ func WithBinaryData(data []byte) Option {
 }
 
 // WithBinaryDataFunc specifies the binary data func which will be called on each request
-func WithBinaryDataFunc(data func(string)[]byte) Option {
+func WithBinaryDataFunc(data func(mtd *desc.MethodDescriptor) []byte) Option {
 	return func(o *RunConfig) error {
 		o.dataFunc = data
 		o.binary = true

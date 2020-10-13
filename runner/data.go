@@ -118,11 +118,7 @@ func createPayloadsFromBinCountDelimited(binData []byte, mtd *desc.MethodDescrip
 	return inputs, nil
 }
 
-func createPayloadsFromBin(binData []byte, mtd *desc.MethodDescriptor, dataFunc func(method string) []byte) ([]*dynamic.Message, error) {
-
-	if dataFunc != nil {
-		binData = dataFunc(mtd.GetName())
-	}
+func createPayloadsFromBin(binData []byte, mtd *desc.MethodDescriptor) ([]*dynamic.Message, error) {
 
 	inputs, err := createPayloadsFromBinCountDelimited(binData, mtd)
 
