@@ -302,7 +302,7 @@ func TestRunUnary(t *testing.T) {
 		}()
 		wg.Wait()
 	})
-
+	// TODO: add test for binary func
 	t.Run("test binary", func(t *testing.T) {
 		gs.ResetCounters()
 
