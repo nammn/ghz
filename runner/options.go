@@ -61,8 +61,11 @@ type RunConfig struct {
 	// data
 	data []byte
 
-	// data func
+	// dataFunc
 	dataFunc func(mtd *desc.MethodDescriptor) []byte
+
+	// lbStrategy
+	lbStrategy string
 
 	binary   bool
 	metadata []byte
@@ -300,6 +303,16 @@ func WithBinaryData(data []byte) Option {
 	return func(o *RunConfig) error {
 		o.data = data
 		o.binary = true
+
+		return nil
+	}
+}
+
+// WithClientLoadBalancing specifies the LB strategy to use
+// The strategies has to be self written and pre defined
+func WithClientLoadBalancing(strategy string) Option {
+	return func(o *RunConfig) error {
+		o.lbStrategy = strategy
 
 		return nil
 	}

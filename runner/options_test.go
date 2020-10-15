@@ -131,6 +131,7 @@ func TestRunConfig_newRunConfig(t *testing.T) {
 			WithCPUs(4),
 			WithBinaryData([]byte("asdf1234foobar")),
 			WithBinaryDataFunc(testFun),
+			WithClientLoadBalancing(`{"loadBalancingPolicy":"round_robin"}`),
 			WithMetadataFromFile("../testdata/metadata.json"),
 			WithProtoset("testdata/bundle.protoset"),
 		)
@@ -157,6 +158,7 @@ func TestRunConfig_newRunConfig(t *testing.T) {
 		assert.Equal(t, "asdf", c.name)
 		assert.Equal(t, []byte("asdf1234foobar"), c.data)
 		assert.Equal(t, testFun, c.dataFunc)
+		assert.Equal(t, `{"loadBalancingPolicy":"round_robin"}`, c.lbStrategy)
 		assert.Equal(t, `{"request-id": "{{.RequestNumber}}"}`, string(c.metadata))
 		assert.Equal(t, "", string(c.proto))
 		assert.Equal(t, "testdata/bundle.protoset", string(c.protoset))
