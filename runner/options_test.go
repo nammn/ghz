@@ -127,7 +127,7 @@ func TestRunConfig_newRunConfig(t *testing.T) {
 			WithCPUs(4),
 			WithBinaryDataFunc(changeFunc),
 			WithBinaryData([]byte("asdf1234foobar")),
-			WithBinaryDataFunc(testFun),
+			WithBinaryDataFunc(changeFunc),
 			WithClientLoadBalancing(`{"loadBalancingPolicy":"round_robin"}`),
 			WithMetadataFromFile("../testdata/metadata.json"),
 			WithProtoset("testdata/bundle.protoset"),
