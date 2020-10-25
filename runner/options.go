@@ -5,7 +5,6 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"fmt"
-	"github.com/jhump/protoreflect/desc"
 	"io"
 	"io/ioutil"
 	"math"
@@ -16,6 +15,7 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/jhump/protoreflect/desc"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc/credentials"
 )
@@ -61,11 +61,10 @@ type RunConfig struct {
 	// data
 	data []byte
 
-	// dataFunc
-	dataFunc func(mtd *desc.MethodDescriptor) []byte
-
 	// lbStrategy
 	lbStrategy string
+	// data func
+	dataFunc func(mtd *desc.MethodDescriptor, callData *CallData) []byte
 
 	binary   bool
 	metadata []byte
@@ -319,7 +318,8 @@ func WithClientLoadBalancing(strategy string) Option {
 }
 
 // WithBinaryDataFunc specifies the binary data func which will be called on each request
-func WithBinaryDataFunc(data func(mtd *desc.MethodDescriptor) []byte) Option {
+//  WithBinaryDataFunc(changeFunc)
+func WithBinaryDataFunc(data func(mtd *desc.MethodDescriptor, callData *CallData) []byte) Option {
 	return func(o *RunConfig) error {
 		o.dataFunc = data
 		o.binary = true
@@ -585,7 +585,7 @@ func WithLogger(log Logger) Option {
 	}
 }
 
-// WithTemplateFuncs adds additional tempalte functions
+// WithTemplateFuncs adds additional template functions
 func WithTemplateFuncs(funcMap template.FuncMap) Option {
 	return func(o *RunConfig) error {
 		o.funcs = funcMap
@@ -594,7 +594,8 @@ func WithTemplateFuncs(funcMap template.FuncMap) Option {
 	}
 }
 
-func newConfig(call, host string, options ...Option) (*RunConfig, error) {
+// NewConfig creates a new RunConfig from the options passed
+func NewConfig(call, host string, options ...Option) (*RunConfig, error) {
 	call = strings.TrimSpace(call)
 	host = strings.TrimSpace(host)
 
